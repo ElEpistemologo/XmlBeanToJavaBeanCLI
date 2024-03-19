@@ -40,6 +40,13 @@ class MainKtTest {
         assertEquals(wrap("Translating myBeans.xml to java beans"), output.toString())
     }
 
+    @DisplayName("The CLI should accept only one XML file as argument, and should display an error message otherwise")
+    @Test
+    fun acceptOnlyOneXMLFileAsAgument() {
+        main(listOf("myBeans.xml", "myOhtersBeans.xml"))
+        assertEquals(wrap("error"), output.toString())
+    }
+
     private fun wrap(str : String) : String = str + "\r\n"
 
 }

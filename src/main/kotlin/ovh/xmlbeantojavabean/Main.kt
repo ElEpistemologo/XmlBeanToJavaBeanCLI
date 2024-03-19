@@ -17,6 +17,11 @@ fun main(args: List<String> = emptyList()) {
         return
     }
 
+    if (args.size > 1) {
+        println("error")
+        return
+    }
+
     val file = File("src\\test\\resources\\properties")
 
     val props = Properties()

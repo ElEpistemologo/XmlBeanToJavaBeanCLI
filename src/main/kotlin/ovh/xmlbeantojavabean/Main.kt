@@ -8,6 +8,13 @@ fun main(args: List<String> = emptyList()) {
 
     if (args.isEmpty()) {
         println("XML Bean to Java Bean CLI Tool Help")
+        return
+    }
+
+    if (args.size == 1 && args[0].endsWith(".xml")){
+        val fileName = args[0]
+        println("Translating $fileName to java beans")
+        return
     }
 
     val file = File("src\\test\\resources\\properties")

@@ -14,7 +14,7 @@ class MainKtTest {
     private val output = ByteArrayOutputStream()
 
     @BeforeAll
-    fun setupStreams(): Unit {
+    fun setupStreams() {
         System.setOut(PrintStream(output))
     }
 
@@ -23,6 +23,13 @@ class MainKtTest {
     fun displayVersion() {
         main(listOf("-v"))
         assertEquals(wrap("xml bean to java bean version 0.0.1.0-SNAPSHOT"), output.toString())
+    }
+
+    @DisplayName("The CLI should display help information when called without arguments")
+    @Test
+    fun displayHelpWheNoArg() {
+        main()
+        assertEquals(wrap("XML Bean to Java Bean CLI Tool Help"), output.toString())
     }
 
     private fun wrap(str : String) : String = str + "\r\n"

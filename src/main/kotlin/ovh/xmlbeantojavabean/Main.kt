@@ -17,7 +17,7 @@ fun processArguments(arguments: List<String>) {
     Arguments.entries.stream()
         .filter { it.isArgument.test(arguments) }
         .findFirst()
-        .ifPresent { it.reponseDelegator.generateResponse(arguments) }
+        .ifPresent { it.responseDelegator.generateResponse(arguments) }
 
 }
 

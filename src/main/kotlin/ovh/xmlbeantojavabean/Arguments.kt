@@ -2,7 +2,7 @@ package ovh.xmlbeantojavabean
 
 import java.util.function.Predicate
 
-enum class Arguments(val isArgument: Predicate<List<String>>, val reponseDelegator: ResponseProcessor) {
+enum class Arguments(val isArgument: Predicate<List<String>>, val responseDelegator: ResponseProcessor) {
 
     VERSION({ it.isNotEmpty() && it[0] == "-v" }, VersionResponse()),
     HELP({ it.isNotEmpty() && it[0] == "-h" }, HelpResponse()),

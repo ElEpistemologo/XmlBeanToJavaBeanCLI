@@ -11,7 +11,7 @@ fun processArguments(arguments : List<String>) {
         return
     }
 
-    if (arguments.isEmpty()) {
+    if (arguments.isEmpty() || arguments[0] == "-h") {
         println("XML Bean to Java Bean CLI Tool Help")
         return
     }

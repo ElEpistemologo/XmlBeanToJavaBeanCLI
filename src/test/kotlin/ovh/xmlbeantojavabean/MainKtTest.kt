@@ -10,6 +10,8 @@ import org.junit.jupiter.params.provider.ValueSource
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
+private const val HELP_MESSAGE = "XML Bean to Java Bean CLI Tool Help"
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MainKtTest {
 
@@ -32,7 +34,13 @@ class MainKtTest {
     @Test
     fun displayHelpWhenNoArg() {
         main()
-        assertEquals(wrap("XML Bean to Java Bean CLI Tool Help"), output.toString())
+        assertEquals(wrap(HELP_MESSAGE), output.toString())
+    }
+    @DisplayName("The CLI should display help information when called with -h argument")
+    @Test
+    fun displayHelp() {
+        main(listOf("-h"))
+        assertEquals(wrap(HELP_MESSAGE), output.toString())
     }
 
     @DisplayName("The CLI should accept an XML file as an argument")
@@ -45,7 +53,7 @@ class MainKtTest {
     @DisplayName("The CLI should accept only one XML file as argument, and should display an error message otherwise")
     @Test
     fun acceptOnlyOneXMLFileAsArgument() {
-        main(listOf("myBeans.xml", "myOhtersBeans.xml"))
+        main(listOf("myBeans.xml", "myOthersBeans.xml"))
         assertEquals(wrap("error"), output.toString())
     }
 

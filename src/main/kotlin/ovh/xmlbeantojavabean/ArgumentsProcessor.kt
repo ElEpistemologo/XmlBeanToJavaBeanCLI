@@ -8,22 +8,19 @@ fun processArguments(arguments: List<String>) {
         return
     }
 
-    if (arguments.isEmpty() || arguments[0] == "-h") {
+    if (arguments.isEmpty()) {
         val helpResponse = HelpResponse()
         helpResponse.generateResponse(arguments)
         return
     }
 
-    if (arguments.size == 1 && arguments[0].endsWith(".xml")) {
-        val javaBeanGenerationResponse = JavaBeanGenerationResponse()
-        javaBeanGenerationResponse.generateResponse(arguments)
-        return
-    }
+    val firstArgument = arguments[0]
 
-    if (arguments.size == 1 && arguments[0] == "-v") {
-        val versionResponse = VersionResponse()
-        versionResponse.generateResponse(arguments)
-    }
+    Arguments.entries.stream()
+        .filter { it.isArgument.test(firstArgument) }
+        .findFirst()
+        .ifPresent { it.reponseDelegator.generateResponse(arguments) }
+
 
 }
 

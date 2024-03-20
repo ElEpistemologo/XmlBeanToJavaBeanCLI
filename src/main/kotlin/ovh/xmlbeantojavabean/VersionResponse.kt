@@ -4,7 +4,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.util.*
 
-class VersionResponse : ResponseDelegator {
+class VersionResponse : ResponseProcessor {
     override fun generateResponse(arguments: List<String>) {
         val file = File("src\\test\\resources\\properties")
 

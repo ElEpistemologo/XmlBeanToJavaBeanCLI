@@ -1,6 +1,6 @@
 package ovh.xmlbeantojavabean
 
-class ErrorResponse : ResponseDelegator {
+class ErrorResponse : ResponseProcessor {
     override fun generateResponse(arguments: List<String>) {
         println("error")
     }

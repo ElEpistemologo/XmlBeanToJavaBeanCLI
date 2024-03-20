@@ -1,6 +1,6 @@
 package ovh.xmlbeantojavabean
 
-interface ResponseDelegator {
+interface ResponseProcessor {
 
     fun generateResponse(arguments : List<String>)
 

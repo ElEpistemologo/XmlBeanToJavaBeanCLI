@@ -2,16 +2,16 @@ package ovh.xmlbeantojavabean
 
 import java.util.function.Predicate
 
-enum class Arguments(val isArgument: Predicate<String>, val reponseDelegator: ResponseDelegator) {
+enum class Arguments(val isArgument: Predicate<List<String>>, val reponseDelegator: ResponseProcessor) {
 
-    VERSION({ it == "-v" }, VersionResponse()),
-    HELP({ it == "-h" }, HelpResponse()),
-    NOARG({ it.isEmpty() }, VersionResponse()),
-    FILE({ it.endsWith(".xml") }, JavaBeanGenerationResponse());
+    VERSION({ it.isNotEmpty() && it[0] == "-v" }, VersionResponse()),
+    HELP({ it.isNotEmpty() && it[0] == "-h" }, HelpResponse()),
+    NOARG({ it.isEmpty() }, HelpResponse()),
+    FILE({ it.isNotEmpty() && it[0].endsWith(".xml") }, JavaBeanGenerationResponse());
 
 
     companion object {
-        fun isAValidArg(arg: String): Boolean = Arguments.entries.stream().anyMatch { it.isArgument.test(arg) }
+        fun isAValidArg(args: List<String>): Boolean = Arguments.entries.stream().anyMatch { it.isArgument.test(args) }
     }
 
 }

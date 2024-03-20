@@ -8,23 +8,14 @@ fun processArguments(arguments: List<String>) {
         return
     }
 
-    if (arguments.isEmpty()) {
-        val helpResponse = HelpResponse()
-        helpResponse.generateResponse(arguments)
-        return
-    }
-
-    val firstArgument = arguments[0]
-
     Arguments.entries.stream()
-        .filter { it.isArgument.test(firstArgument) }
+        .filter { it.isArgument.test(arguments) }
         .findFirst()
         .ifPresent { it.reponseDelegator.generateResponse(arguments) }
-
 
 }
 
 fun areArgsInError(arguments: List<String>): Boolean {
     if (arguments.size > 1) return true
-    return arguments.stream().anyMatch { !Arguments.isAValidArg(it) }
+    return !Arguments.isAValidArg(arguments)
 }

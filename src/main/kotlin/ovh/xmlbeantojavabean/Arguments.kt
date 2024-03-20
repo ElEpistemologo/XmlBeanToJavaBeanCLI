@@ -6,7 +6,7 @@ enum class Arguments(val isArgument: Predicate<List<String>>, val reponseDelegat
 
     VERSION({ it.isNotEmpty() && it[0] == "-v" }, VersionResponse()),
     HELP({ it.isNotEmpty() && it[0] == "-h" }, HelpResponse()),
-    NOARG({ it.isEmpty() }, HelpResponse()),
+    NO_ARG({ it.isEmpty() }, HelpResponse()),
     FILE({ it.isNotEmpty() && it[0].endsWith(".xml") }, JavaBeanGenerationResponse());
 
 

@@ -10,6 +10,7 @@ repositories {
 }
 
 dependencies {
+    implementation("com.google.guava:guava:33.1.0-jre")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")

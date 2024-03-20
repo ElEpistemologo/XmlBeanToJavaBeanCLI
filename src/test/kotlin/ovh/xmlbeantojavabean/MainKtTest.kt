@@ -65,6 +65,6 @@ class MainKtTest {
         assertEquals(wrap("error"), output.toString())
     }
 
-    private fun wrap(str : String) : String = str + "\r\n"
+    private fun wrap(str : String) = str + "\r\n"
 
 }

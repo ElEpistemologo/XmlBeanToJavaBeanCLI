@@ -12,6 +12,10 @@ class XMLConverterImpl : XMLConverter {
         Preconditions.checkArgument(file.exists())
         Preconditions.checkArgument(file.path.endsWith(".xml"))
         getValidator().validate(StreamSource(file))
+
+        val fileName = file.name.removeSuffix(".xml")
+        val javaFile = File("src/test/output/$fileName.java")
+        javaFile.createNewFile()
     }
 
     private fun getValidator() : Validator {

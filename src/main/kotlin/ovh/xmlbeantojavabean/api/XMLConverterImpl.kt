@@ -16,6 +16,24 @@ class XMLConverterImpl : XMLConverter {
         val fileName = file.name.removeSuffix(".xml")
         val javaFile = File("src/test/output/$fileName.java")
         javaFile.createNewFile()
+
+        val writer = javaFile.bufferedWriter()
+        writer.write("""
+            import org.springframework.context.annotation.Bean;
+            import org.springframework.context.annotation.Configuration;
+
+            @Configuration
+            public class ConfigurationTest {
+
+                @Bean
+                TestClass testClass() {
+                    TestClass testClass = new TestClass();
+                    return testClass;
+                }
+
+            }
+        """.trimIndent().replace("\n", System.lineSeparator()))
+        writer.close()
     }
 
     private fun getValidator() : Validator {

@@ -43,14 +43,27 @@ class XMLConverterImplTest {
     @DisplayName("The API generate a java file when the given XML is a valid spring beans xml file")
     @Test
     fun generateJavaFile() {
-        val xmlBeans = File("src/test/resources/beans1.xml")
-        assertTrue(xmlBeans.exists())
+        val xmlBeans = File("src/test/resources/xmlInputCases/beans1.xml")
 
         val converter = XMLConverterImpl()
         converter.generateJava(xmlBeans)
 
         val javaBeans = File("src/test/output/beans1.java")
         assertTrue(javaBeans.exists())
+    }
+
+    @Test
+    fun generateSingleton() {
+        val xmlBeans = File("src/test/resources/xmlInputCases/beans2.xml")
+
+        val converter = XMLConverterImpl()
+        converter.generateJava(xmlBeans)
+
+        val javaBeansReference = File("src/test/resources/javaOutPutReferences/beans2.java")
+        val javaBeansOutput = File("src/test/output/beans2.java")
+        val referenceBytes = Files.readAllBytes(javaBeansReference.toPath())
+        val outputBytes = Files.readAllBytes(javaBeansOutput.toPath())
+        assertTrue(referenceBytes.contentEquals(outputBytes))
     }
 
     companion object {

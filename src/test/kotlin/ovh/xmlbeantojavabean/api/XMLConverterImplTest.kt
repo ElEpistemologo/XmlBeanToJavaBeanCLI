@@ -54,13 +54,17 @@ class XMLConverterImplTest {
 
     @Test
     fun generateSingleton() {
-        val xmlBeans = File("src/test/resources/xmlInputCases/beans2.xml")
-
+        generateJava("beans2")
+        validateGeneratedJava("beans2")
+    }
+    private fun generateJava(sourceName: String) {
+        val xmlBeans = File("src/test/resources/xmlInputCases/$sourceName.xml")
         val converter = XMLConverterImpl()
         converter.generateJava(xmlBeans)
-
-        val javaBeansReference = File("src/test/resources/javaOutPutReferences/beans2.java")
-        val javaBeansOutput = File("src/test/output/beans2.java")
+    }
+    private fun validateGeneratedJava(sourceName: String) {
+        val javaBeansReference = File("src/test/resources/javaOutPutReferences/$sourceName.java")
+        val javaBeansOutput = File("src/test/output/$sourceName.java")
         val referenceBytes = Files.readAllBytes(javaBeansReference.toPath())
         val outputBytes = Files.readAllBytes(javaBeansOutput.toPath())
         assertTrue(referenceBytes.contentEquals(outputBytes))

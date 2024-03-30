@@ -52,6 +52,7 @@ class XMLConverterImplTest {
         assertTrue(javaBeans.exists())
     }
 
+    @DisplayName("Generate basic singleton with only id and class attribute")
     @Test
     fun generateSingleton() {
         generateJava("beans2")

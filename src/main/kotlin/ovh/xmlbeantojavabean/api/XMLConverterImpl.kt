@@ -31,27 +31,38 @@ class XMLConverterImpl : XMLConverter {
             .map { it.id }
             .findFirst()
 
-        if (idOpt.isPresent) {
-        val id = idOpt.get()
+        val clazzOpt = beans.importOrAliasOrBean.stream()
+            .filter { it is Bean }
+            .map { it as Bean }
+            .map { it.clazz }
+            .findFirst()
 
-        val writer = javaFile.bufferedWriter()
-        writer.write("""
-            import org.springframework.context.annotation.Bean;
-            import org.springframework.context.annotation.Configuration;
-            import api.test.TestClass;
+        if (idOpt.isPresent && clazzOpt.isPresent) {
 
-            @Configuration
-            public class ConfigurationTest {
+            val id = idOpt.get()
+            val clazzComplete = clazzOpt.get()
+            val clazzShortOpt = clazzComplete.split(".").stream()
+                .reduce{ s: String, last: String -> last}
+            val clazzShort = clazzShortOpt.get()
 
-                @Bean
-                TestClass $id() {
-                    TestClass $id = new TestClass();
-                    return $id;
+            val writer = javaFile.bufferedWriter()
+            writer.write("""
+                import org.springframework.context.annotation.Bean;
+                import org.springframework.context.annotation.Configuration;
+                import $clazzComplete;
+    
+                @Configuration
+                public class ConfigurationTest {
+    
+                    @Bean
+                    $clazzShort $id() {
+                        $clazzShort $id = new $clazzShort();
+                        return $id;
+                    }
+    
                 }
-
-            }
-        """.trimIndent().replace("\n", System.lineSeparator()))
-        writer.close()
+            """.trimIndent().replace("\n", System.lineSeparator()))
+            writer.close()
         }
 
     }

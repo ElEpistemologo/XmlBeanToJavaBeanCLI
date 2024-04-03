@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.22"
+    java
 }
 
 group = "ovh.xmlbeantojavabean"
@@ -11,6 +12,8 @@ repositories {
 
 dependencies {
     implementation("com.google.guava:guava:33.1.0-jre")
+    implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
+    implementation("com.sun.xml.bind:jaxb-impl:4.0.5")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")

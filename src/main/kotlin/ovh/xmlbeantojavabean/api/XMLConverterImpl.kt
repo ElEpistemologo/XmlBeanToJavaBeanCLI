@@ -1,11 +1,15 @@
 package ovh.xmlbeantojavabean.api
 
 import com.google.common.base.Preconditions
+import jakarta.xml.bind.JAXBContext
+import ovh.xmlbeantojavabean.api.beans.Bean
+import ovh.xmlbeantojavabean.api.beans.Beans
 import java.io.File
 import javax.xml.XMLConstants
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
 import javax.xml.validation.Validator
+
 
 class XMLConverterImpl : XMLConverter {
     override fun generateJava(file: File) {
@@ -17,6 +21,19 @@ class XMLConverterImpl : XMLConverter {
         val javaFile = File("src/test/output/$fileName.java")
         javaFile.createNewFile()
 
+        val jc = JAXBContext.newInstance("ovh.xmlbeantojavabean.api.beans")
+        val unmarshaller = jc.createUnmarshaller()
+        val beans : Beans = unmarshaller.unmarshal(file) as Beans
+
+        val idOpt = beans.importOrAliasOrBean.stream()
+            .filter { it is Bean }
+            .map { it as Bean }
+            .map { it.id }
+            .findFirst()
+
+        if (idOpt.isPresent) {
+        val id = idOpt.get()
+
         val writer = javaFile.bufferedWriter()
         writer.write("""
             import org.springframework.context.annotation.Bean;
@@ -27,14 +44,16 @@ class XMLConverterImpl : XMLConverter {
             public class ConfigurationTest {
 
                 @Bean
-                TestClass testClass() {
-                    TestClass testClass = new TestClass();
-                    return testClass;
+                TestClass $id() {
+                    TestClass $id = new TestClass();
+                    return $id;
                 }
 
             }
         """.trimIndent().replace("\n", System.lineSeparator()))
         writer.close()
+        }
+
     }
 
     private fun getValidator() : Validator {

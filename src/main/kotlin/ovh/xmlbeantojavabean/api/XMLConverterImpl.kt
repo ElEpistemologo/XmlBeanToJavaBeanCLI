@@ -25,26 +25,15 @@ class XMLConverterImpl : XMLConverter {
         val unmarshaller = jc.createUnmarshaller()
         val beans : Beans = unmarshaller.unmarshal(file) as Beans
 
-        val idOpt = beans.importOrAliasOrBean.stream()
+        val beanOpt = beans.importOrAliasOrBean.stream()
             .filter { it is Bean }
             .map { it as Bean }
-            .map { it.id }
             .findFirst()
 
-        val clazzOpt = beans.importOrAliasOrBean.stream()
-            .filter { it is Bean }
-            .map { it as Bean }
-            .map { it.clazz }
-            .findFirst()
+        if (beanOpt.isPresent) {
 
-        if (idOpt.isPresent && clazzOpt.isPresent) {
-
-            val id = idOpt.get()
-            val clazzComplete = clazzOpt.get()
-            val clazzShortOpt = clazzComplete.split(".").stream()
-                .reduce{ s: String, last: String -> last}
-            val clazzShort = clazzShortOpt.get()
-
+            val singleBean = generateBean(beanOpt.get())
+            val clazzComplete = beanOpt.get().clazz
             val writer = javaFile.bufferedWriter()
             writer.write("""
                 import org.springframework.context.annotation.Bean;
@@ -54,17 +43,28 @@ class XMLConverterImpl : XMLConverter {
                 @Configuration
                 public class ConfigurationTest {
     
-                    @Bean
-                    $clazzShort $id() {
-                        $clazzShort $id = new $clazzShort();
-                        return $id;
-                    }
+                    $singleBean
     
                 }
             """.trimIndent().replace("\n", System.lineSeparator()))
             writer.close()
         }
 
+
+    }
+
+    private fun generateBean(bean : Bean) : String {
+        val id = bean.id
+        val clazzComplete = bean.clazz
+        val clazzShortOpt = clazzComplete.split(".").stream()
+            .reduce{ s: String, last: String -> last}
+        val clazzShort = clazzShortOpt.get()
+
+        return """@Bean
+                    $clazzShort $id() {
+                        $clazzShort $id = new $clazzShort();
+                        return $id;
+                    }""".trimIndent()
     }
 
     private fun getValidator() : Validator {

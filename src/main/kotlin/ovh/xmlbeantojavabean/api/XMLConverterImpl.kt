@@ -1,10 +1,16 @@
 package ovh.xmlbeantojavabean.api
 
 import com.google.common.base.Preconditions
+import com.squareup.javapoet.ClassName
+import com.squareup.javapoet.JavaFile
+import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.TypeSpec
 import jakarta.xml.bind.JAXBContext
 import ovh.xmlbeantojavabean.api.beans.Bean
 import ovh.xmlbeantojavabean.api.beans.Beans
 import java.io.File
+import java.util.stream.Collectors
+import javax.lang.model.element.Modifier
 import javax.xml.XMLConstants
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
@@ -17,54 +23,60 @@ class XMLConverterImpl : XMLConverter {
         Preconditions.checkArgument(file.path.endsWith(".xml"))
         getValidator().validate(StreamSource(file))
 
-        val fileName = file.name.removeSuffix(".xml")
-        val javaFile = File("src/test/output/$fileName.java")
-        javaFile.createNewFile()
 
         val jc = JAXBContext.newInstance("ovh.xmlbeantojavabean.api.beans")
         val unmarshaller = jc.createUnmarshaller()
         val beans : Beans = unmarshaller.unmarshal(file) as Beans
 
-        val beanOpt = beans.importOrAliasOrBean.stream()
-            .filter { it is Bean }
-            .map { it as Bean }
-            .findFirst()
+        val className = file.name.removeSuffix(".xml")
+        val javaFile2 = JavaFile.builder("", generateClass(beans, className))
+            .skipJavaLangImports(true)
+            .indent("    ")
+            .build()
 
-        if (beanOpt.isPresent) {
-
-            val singleBean = generateBean(beanOpt.get())
-            val clazzComplete = beanOpt.get().clazz
-            val writer = javaFile.bufferedWriter()
-            writer.write("""
-                import org.springframework.context.annotation.Bean;
-                import org.springframework.context.annotation.Configuration;
-                import $clazzComplete;
-    
-                @Configuration
-                public class ConfigurationTest {
-    
-                    $singleBean
-    
-                }
-            """.trimIndent().replace("\n", System.lineSeparator()))
-            writer.close()
-        }
-
-
+        javaFile2.writeTo(File("src/test/output/"))
     }
 
-    private fun generateBean(bean : Bean) : String {
+    private fun generateClass(beans: Beans, className: String) : TypeSpec  {
+
+        val configurationAnnotation : ClassName =
+            ClassName.get("org.springframework.context.annotation", "Configuration")
+
+        val configurationClass = TypeSpec.classBuilder(className)
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(configurationAnnotation)
+
+        beans.importOrAliasOrBean.stream()
+            .filter { it is Bean }
+            .map { it as Bean }
+            .map { generateMethod(it) }
+            .forEach{configurationClass.addMethod(it)}
+
+        return configurationClass.build()
+    }
+
+    private fun generateMethod(bean : Bean) : MethodSpec {
         val id = bean.id
         val clazzComplete = bean.clazz
         val clazzShortOpt = clazzComplete.split(".").stream()
             .reduce{ s: String, last: String -> last}
         val clazzShort = clazzShortOpt.get()
+        val clazzPackage = clazzComplete.split(".").stream()
+            .limit(clazzComplete.count { it == '.' }.toLong())
+            .collect(Collectors.joining("."))
 
-        return """@Bean
-                    $clazzShort $id() {
-                        $clazzShort $id = new $clazzShort();
-                        return $id;
-                    }""".trimIndent()
+        val beanType : ClassName = ClassName.get(clazzPackage, clazzShort)
+        val beanAnnotation : ClassName = ClassName.get("org.springframework.context.annotation", "Bean")
+
+        val method = MethodSpec.methodBuilder(id)
+            .addModifiers(Modifier.PUBLIC)
+            .returns(beanType)
+            .addAnnotation(beanAnnotation)
+            .addStatement("$clazzShort $id = new $clazzShort()")
+            .addStatement("return $id")
+            .build()
+
+        return method
     }
 
     private fun getValidator() : Validator {

@@ -14,6 +14,7 @@ dependencies {
     implementation("com.google.guava:guava:33.1.0-jre")
     implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
     implementation("com.sun.xml.bind:jaxb-impl:4.0.5")
+    implementation("com.squareup:javapoet:1.13.0")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")

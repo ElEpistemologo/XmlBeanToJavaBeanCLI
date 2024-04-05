@@ -1,14 +1,12 @@
+import api.test.TestClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import api.test.TestClass;
 
 @Configuration
-public class ConfigurationTest {
-
+public class Beans2 {
     @Bean
-    TestClass testClass() {
+    public TestClass testClass() {
         TestClass testClass = new TestClass();
         return testClass;
     }
-
 }

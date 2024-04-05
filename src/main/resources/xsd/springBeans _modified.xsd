@@ -2,6 +2,8 @@
 
 <xsd:schema xmlns="http://www.springframework.org/schema/beans"
 		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+		xmlns:jxb="https://jakarta.ee/xml/ns/jaxb"
+		jxb:version="3.0"
 		targetNamespace="http://www.springframework.org/schema/beans">
 
 	<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
@@ -579,9 +581,21 @@
 				<xsd:element ref="description" minOccurs="0"/>
 				<xsd:choice minOccurs="0" maxOccurs="1">
 					<xsd:element ref="bean"/>
-					<xsd:element ref="ref"/>
+					<xsd:element ref="ref">
+						<xsd:annotation>
+							<xsd:appinfo>
+								<jxb:property name="descriptionRef"/>
+							</xsd:appinfo>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element ref="idref"/>
-					<xsd:element ref="value"/>
+					<xsd:element ref="value">
+						<xsd:annotation>
+							<xsd:appinfo>
+								<jxb:property name="descriptionValue"/>
+							</xsd:appinfo>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element ref="null"/>
 					<xsd:element ref="array"/>
 					<xsd:element ref="list"/>
@@ -1049,9 +1063,21 @@
 			<xsd:choice minOccurs="0" maxOccurs="1">
 				<xsd:element ref="meta"/>
 				<xsd:element ref="bean"/>
-				<xsd:element ref="ref"/>
+				<xsd:element ref="ref">
+						<xsd:annotation>
+							<xsd:appinfo>
+								<jxb:property name="descriptionRef"/>
+							</xsd:appinfo>
+						</xsd:annotation>
+					</xsd:element>
 				<xsd:element ref="idref"/>
-				<xsd:element ref="value"/>
+				<xsd:element ref="value">
+						<xsd:annotation>
+							<xsd:appinfo>
+								<jxb:property name="descriptionValue"/>
+						</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
 				<xsd:element ref="null"/>
 				<xsd:element ref="array"/>
 				<xsd:element ref="list"/>
@@ -1132,7 +1158,13 @@
 	<!-- 'entry' element type -->
 	<xsd:complexType name="entryType">
 		<xsd:sequence>
-			<xsd:element ref="key" minOccurs="0"/>
+			<xsd:element ref="key" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<jxb:property name="entryTypeKey"/>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:group ref="collectionElements"/>
 		</xsd:sequence>
 		<xsd:attribute name="key" type="xsd:string">

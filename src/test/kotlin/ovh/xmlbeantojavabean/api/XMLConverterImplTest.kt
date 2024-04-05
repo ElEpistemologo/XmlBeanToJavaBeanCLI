@@ -49,12 +49,18 @@ class XMLConverterImplTest {
 
     @Test
     fun `Generate basic singleton with only id and class attribute`() {
-        generateJava("beans2")
-        validateGeneratedJava("beans2")
+        generateJava("Beans2")
+        validateGeneratedJava("Beans2")
+    }
+    @Test
+    fun `Generate several basic singleton`() {
+        generateJava("Beans3")
+        validateGeneratedJava("Beans3")
     }
     private fun generateJava(sourceName: String) {
         val xmlBeans = File("src/test/resources/xmlInputCases/$sourceName.xml")
         val converter = XMLConverterImpl()
+        cleanOutput()
         converter.generateJava(xmlBeans)
     }
     private fun validateGeneratedJava(sourceName: String) {

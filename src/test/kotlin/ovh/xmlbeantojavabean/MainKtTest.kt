@@ -26,34 +26,34 @@ class MainKtTest {
     @DisplayName("The CLI should display its version")
     @Test
     fun displayVersion() {
-        main(listOf("-v"))
+        main(arrayOf("-v"))
         assertEquals(wrap("xml bean to java bean version 0.0.1.0-SNAPSHOT"), output.toString())
     }
 
     @DisplayName("The CLI should display help information when called without arguments")
     @Test
     fun displayHelpWhenNoArg() {
-        main()
+        main(arrayOf())
         assertEquals(wrap(HELP_MESSAGE), output.toString())
     }
     @DisplayName("The CLI should display help information when called with -h argument")
     @Test
     fun displayHelp() {
-        main(listOf("-h"))
+        main(arrayOf("-h"))
         assertEquals(wrap(HELP_MESSAGE), output.toString())
     }
 
     @DisplayName("The CLI should accept an XML file as an argument")
     @Test
     fun acceptXMLFileAsArgument() {
-        main(listOf("myBeans.xml"))
+        main(arrayOf("myBeans.xml"))
         assertEquals(wrap("Translating myBeans.xml to java beans"), output.toString())
     }
 
     @DisplayName("The CLI should accept only one XML file as argument, and should display an error message otherwise")
     @Test
     fun acceptOnlyOneXMLFileAsArgument() {
-        main(listOf("myBeans.xml", "myOthersBeans.xml"))
+        main(arrayOf("myBeans.xml", "myOthersBeans.xml"))
         assertEquals(wrap("error"), output.toString())
     }
 
@@ -61,7 +61,7 @@ class MainKtTest {
     @ParameterizedTest
     @ValueSource(strings = ["myBeans.html", "toto", "5é&9té9d1cé"])
     fun refuseNonXMLFile(fileName : String) {
-        main(listOf(fileName))
+        main(arrayOf(fileName))
         assertEquals(wrap("error"), output.toString())
     }
 

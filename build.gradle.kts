@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.22"
-    java
+    application
 }
 
 group = "ovh.xmlbeantojavabean"
@@ -18,6 +18,10 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
+}
+
+application {
+    mainClass = "ovh.xmlbeantojavabean.MainKt"
 }
 
 tasks.test {

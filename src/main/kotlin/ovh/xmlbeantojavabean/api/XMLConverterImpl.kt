@@ -23,7 +23,6 @@ class XMLConverterImpl : XMLConverter {
         Preconditions.checkArgument(file.path.endsWith(".xml"))
         getValidator().validate(StreamSource(file))
 
-
         val jc = JAXBContext.newInstance("ovh.xmlbeantojavabean.api.beans")
         val unmarshaller = jc.createUnmarshaller()
         val beans : Beans = unmarshaller.unmarshal(file) as Beans
@@ -59,7 +58,7 @@ class XMLConverterImpl : XMLConverter {
         val id = bean.id
         val clazzComplete = bean.clazz
         val clazzShortOpt = clazzComplete.split(".").stream()
-            .reduce{ s: String, last: String -> last}
+            .reduce{ _: String, last: String -> last}
         val clazzShort = clazzShortOpt.get()
         val clazzPackage = clazzComplete.split(".").stream()
             .limit(clazzComplete.count { it == '.' }.toLong())

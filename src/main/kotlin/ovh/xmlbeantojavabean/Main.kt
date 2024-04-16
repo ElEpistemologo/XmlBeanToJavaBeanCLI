@@ -1,9 +1,7 @@
 package ovh.xmlbeantojavabean
 
-fun main(args: List<String> = emptyList()) {
-
-    processArguments(args)
-
+fun main(args: Array<String>) {
+    processArguments(args.toList())
 }
 
 fun processArguments(arguments: List<String>) {

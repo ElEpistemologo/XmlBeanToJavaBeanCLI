@@ -33,7 +33,9 @@ class XMLConverterImpl : XMLConverter {
             .indent("    ")
             .build()
 
-        javaFile2.writeTo(File("src/test/output/"))
+        val destinationPath = file.toPath().parent.toFile()
+
+        javaFile2.writeTo(destinationPath)
     }
 
     private fun generateClass(beans: Beans, className: String) : TypeSpec  {
@@ -80,7 +82,8 @@ class XMLConverterImpl : XMLConverter {
 
     private fun getValidator() : Validator {
         val factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
-        val xsd = StreamSource(File(System.getProperty("user.dir")+ "/src/main/resources/xsd/springBeans.xsd"))
+        val xsdUri = javaClass.getResourceAsStream("/xsd/springBeans.xsd")
+        val xsd = StreamSource(xsdUri)
         val schema = factory.newSchema(xsd)
         return schema.newValidator()
     }

@@ -11,6 +11,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
+import java.util.regex.Pattern
 
 class XMLConverterImplTest {
 
@@ -43,7 +44,7 @@ class XMLConverterImplTest {
         val converter = XMLConverterImpl()
         converter.generateJava(xmlBeans)
 
-        val javaBeans = File("src/test/output/beans1.java")
+        val javaBeans = File("src/test/resources/xmlInputCases/beans1.java")
         assertTrue(javaBeans.exists())
     }
 
@@ -65,7 +66,7 @@ class XMLConverterImplTest {
     }
     private fun validateGeneratedJava(sourceName: String) {
         val javaBeansReference = File("src/test/resources/javaOutPutReferences/$sourceName.java")
-        val javaBeansOutput = File("src/test/output/$sourceName.java")
+        val javaBeansOutput = File("src/test/resources/xmlInputCases/$sourceName.java")
         val referenceBytes = Files.readAllBytes(javaBeansReference.toPath())
         val outputBytes = Files.readAllBytes(javaBeansOutput.toPath())
         assertTrue(referenceBytes.contentEquals(outputBytes))
@@ -77,14 +78,13 @@ class XMLConverterImplTest {
         fun cleanOutput() {
             val deleteAllFiles = object : SimpleFileVisitor<Path>() {
                 override fun visitFile(file: Path?, attrs: BasicFileAttributes?): FileVisitResult {
-                    if (file != null) {
+                    if (file != null && Pattern.matches(".*java", file.toRealPath().toString()) ) {
                         Files.delete(file)
                     }
                     return FileVisitResult.CONTINUE
                 }
             }
-            print(System.getProperty("user.dir"))
-            Files.walkFileTree(Path.of("src/test/output"), deleteAllFiles)
+            Files.walkFileTree(Path.of("src/test/resources/xmlInputCases"), deleteAllFiles)
         }
     }
 }

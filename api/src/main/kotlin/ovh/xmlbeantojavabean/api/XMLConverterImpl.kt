@@ -8,6 +8,7 @@ import com.squareup.javapoet.TypeSpec
 import jakarta.xml.bind.JAXBContext
 import ovh.xmlbeantojavabean.api.beans.Bean
 import ovh.xmlbeantojavabean.api.beans.Beans
+import ovh.xmlbeantojavabean.api.beans.ConstructorArg
 import java.io.File
 import java.util.stream.Collectors
 import javax.lang.model.element.Modifier
@@ -73,11 +74,26 @@ class XMLConverterImpl : XMLConverter {
             .addModifiers(Modifier.PUBLIC)
             .returns(beanType)
             .addAnnotation(beanAnnotation)
-            .addStatement("$clazzShort $id = new $clazzShort()")
+            .addStatement(generateConstructionStatement(bean, clazzShort, id))
             .addStatement("return $id")
             .build()
 
         return method
+    }
+
+    private fun generateConstructionStatement(bean : Bean, clazzShort: String, id: String?) :String {
+        val constructorArgs : String = bean.metaOrConstructorArgOrProperty.stream()
+            .filter{it is ConstructorArg}
+            .map{it as ConstructorArg}
+            .map{ addCrochetIfString(it) }
+            .collect(Collectors.joining(", "))
+
+      return "$clazzShort $id = new $clazzShort($constructorArgs)"
+    }
+
+    private fun addCrochetIfString(arg: ConstructorArg): String {
+        if (arg.type == "java.lang.String") return "\"${arg.value}\""
+        return arg.value
     }
 
     private fun getValidator() : Validator {

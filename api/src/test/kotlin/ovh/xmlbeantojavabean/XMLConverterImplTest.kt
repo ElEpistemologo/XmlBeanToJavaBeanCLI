@@ -21,6 +21,7 @@ class XMLConverterImplTest {
         val converter = XMLConverterImpl()
         assertThrows<IllegalArgumentException> { converter.generateJava(nonExistingFile) }
     }
+
     @Test
     fun `The API should fail early if the file is not a XML`() {
         val nonXMLFile = File("src/test/resources/myBeans.html")
@@ -53,11 +54,19 @@ class XMLConverterImplTest {
         generateJava("Beans2")
         validateGeneratedJava("Beans2")
     }
+
     @Test
     fun `Generate several basic singleton`() {
         generateJava("Beans3")
         validateGeneratedJava("Beans3")
     }
+
+    @Test
+    fun `Generate singleton with primitive constructor parameters`() {
+        generateJava("Beans4")
+        validateGeneratedJava("Beans4")
+    }
+
     private fun generateJava(sourceName: String) {
         val xmlBeans = File("src/test/resources/xmlInputCases/$sourceName.xml")
         val converter = XMLConverterImpl()
